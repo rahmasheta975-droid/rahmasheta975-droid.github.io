@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rahma Sheta — AI Data Evaluator & Medical Informatics Specialist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Base ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #07111C;
+  --bg2:       #0C1B2A;
+  --bg3:       #112032;
+  --navy:      #0F2D4A;
+  --cyan:      #00C9B8;
+  --cyan-dim:  #007E75;
+  --cyan-glow: rgba(0,201,184,0.12);
+  --white:     #EEF4FA;
+  --muted:     #7A9BBB;
+  --border:    rgba(0,201,184,0.18);
+  --border2:   rgba(122,155,187,0.15);
+  --serif:     'DM Serif Display', Georgia, serif;
+  --mono:      'DM Mono', monospace;
+  --sans:      'Instrument Sans', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 2px; }
+
+/* ── Grid background ─────────────────────────────────────────────── */
+.grid-bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,201,184,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,201,184,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 0%, black 30%, transparent 100%);
+}
+
+/* ── NAV ─────────────────────────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5vw;
+  height: 60px;
+  background: rgba(7,17,28,0.85);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border2);
+}
+
+.nav-logo {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--cyan);
+  letter-spacing: 0.05em;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex; gap: 2rem; list-style: none;
+}
+
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--cyan); }
+
+.nav-badge {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--cyan);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 3px 10px;
+  background: var(--cyan-glow);
+}
+
+/* ── HERO ─────────────────────────────────────────────────────────── */
+#hero {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 120px 5vw 80px;
+  overflow: hidden;
+}
+
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--cyan);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+}
+
+.hero-eyebrow span {
+  display: inline-block;
+  width: 32px; height: 1px;
+  background: var(--cyan);
+  vertical-align: middle;
+  margin-right: 10px;
+}
+
+.hero-name {
+  font-family: var(--serif);
+  font-size: clamp(52px, 8vw, 96px);
+  line-height: 1.0;
+  color: var(--white);
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeUp 0.9s ease 0.35s forwards;
+}
+
+.hero-name em {
+  font-style: italic;
+  color: var(--cyan);
+}
+
+.hero-sub {
+  font-size: clamp(16px, 2.2vw, 20px);
+  color: var(--muted);
+  max-width: 600px;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+  opacity: 0;
+  animation: fadeUp 0.9s ease 0.5s forwards;
+}
+
+.hero-tags {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-bottom: 3rem;
+  opacity: 0;
+  animation: fadeUp 0.9s ease 0.65s forwards;
+}
+
+.hero-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 5px 14px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--cyan);
+  background: var(--cyan-glow);
+}
+
+.hero-cta {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.9s ease 0.8s forwards;
+}
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  border-radius: 3px;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--cyan);
+  color: var(--bg);
+}
+.btn-primary:hover { background: #00E5D2; transform: translateY(-1px); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--cyan);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover { background: var(--cyan-glow); transform: translateY(-1px); }
+
+/* Floating 3D-style orb decoration */
+.hero-orb {
+  position: absolute;
+  right: 8vw; top: 50%;
+  transform: translateY(-50%);
+  width: clamp(280px, 30vw, 480px);
+  height: clamp(280px, 30vw, 480px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%,
+    rgba(0,201,184,0.12) 0%,
+    rgba(0,100,120,0.08) 40%,
+    transparent 70%);
+  border: 1px solid var(--border);
+  box-shadow:
+    inset 0 0 60px rgba(0,201,184,0.06),
+    0 0 80px rgba(0,201,184,0.05);
+  animation: orbPulse 6s ease-in-out infinite;
+  opacity: 0;
+  animation: orbIn 1.2s ease 0.4s forwards, orbPulse 6s ease-in-out 1.6s infinite;
+}
+
+.orb-ring {
+  position: absolute; inset: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,201,184,0.1);
+  animation: spin 20s linear infinite;
+}
+.orb-ring2 {
+  position: absolute; inset: 40px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0,201,184,0.08);
+  animation: spin 30s linear infinite reverse;
+}
+
+.orb-dot {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+  top: 50%; left: 50%;
+  transform-origin: -80px 0;
+  animation: orbit 8s linear infinite;
+}
+
+.orb-label {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--cyan);
+  opacity: 0.6;
+}
+.orb-label.tl { top: 22%; left: 22%; }
+.orb-label.br { bottom: 22%; right: 22%; }
+.orb-label.tr { top: 22%; right: 20%; }
+
+/* ── SECTION COMMON ───────────────────────────────────────────────── */
+section {
+  position: relative; z-index: 1;
+  padding: 90px 5vw;
+}
+
+.section-header {
+  margin-bottom: 3.5rem;
+}
+
+.section-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--cyan);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.section-label::before {
+  content: '';
+  display: block;
+  width: 24px; height: 1px;
+  background: var(--cyan);
+}
+
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.1;
+  color: var(--white);
+}
+
+/* ── ABOUT ────────────────────────────────────────────────────────── */
+#about {
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  border-bottom: 1px solid var(--border2);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5vw;
+  align-items: start;
+}
+
+.about-text p {
+  color: var(--muted);
+  margin-bottom: 1.1rem;
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+.about-text p strong {
+  color: var(--white);
+  font-weight: 600;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 2.5rem;
+}
+
+.stat {
+  background: var(--bg3);
+  padding: 1.5rem;
+}
+
+.stat-val {
+  font-family: var(--serif);
+  font-size: 36px;
+  color: var(--cyan);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lang-card {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.5rem;
+  background: var(--cyan-glow);
+  margin-bottom: 1rem;
+}
+
+.lang-name {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.lang-level {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--cyan);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.lang-bar-bg {
+  height: 3px;
+  background: var(--border2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.lang-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--cyan-dim));
+  border-radius: 2px;
+  transition: width 1.5s ease;
+}
+
+/* ── SKILLS ───────────────────────────────────────────────────────── */
+#skills { background: var(--bg); }
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1px;
+  background: var(--border2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.skill-card {
+  background: var(--bg2);
+  padding: 1.75rem;
+  transition: background 0.2s;
+}
+.skill-card:hover { background: var(--bg3); }
+
+.skill-card-icon {
+  width: 36px; height: 36px;
+  border-radius: 4px;
+  background: var(--cyan-glow);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem;
+  font-size: 16px;
+}
+
+.skill-card-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--cyan);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.skill-tags {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+
+.skill-tag {
+  font-size: 11.5px;
+  color: var(--muted);
+  background: rgba(122,155,187,0.07);
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  padding: 3px 9px;
+  transition: all 0.2s;
+}
+.skill-tag:hover { color: var(--white); border-color: var(--border); }
+
+/* ── PROJECTS ─────────────────────────────────────────────────────── */
+#projects {
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  border-bottom: 1px solid var(--border2);
+}
+
+.projects-list { display: flex; flex-direction: column; gap: 1px; background: var(--border2); border: 1px solid var(--border2); border-radius: 4px; overflow: hidden; }
+
+.project-card {
+  background: var(--bg);
+  padding: 2rem 2.25rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.5rem;
+  align-items: start;
+  transition: background 0.2s;
+}
+.project-card:hover { background: var(--bg3); }
+
+.project-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--cyan-dim);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.project-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--white);
+  margin-bottom: 0.4rem;
+  line-height: 1.2;
+}
+
+.project-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--cyan);
+  letter-spacing: 0.07em;
+  margin-bottom: 1rem;
+}
+
+.project-desc {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+.project-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.project-bullets li {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.6;
+  padding-left: 16px;
+  position: relative;
+}
+
+.project-bullets li::before {
+  content: '▸';
+  position: absolute; left: 0;
+  color: var(--cyan);
+  font-size: 11px;
+  top: 2px;
+}
+
+.project-stack {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 1.25rem;
+}
+
+.stack-tag {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--cyan);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 3px 9px;
+  background: var(--cyan-glow);
+}
+
+.project-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  color: var(--cyan);
+  background: var(--cyan-glow);
+  white-space: nowrap;
+  align-self: start;
+  margin-top: 4px;
+}
+
+/* ── EXPERIENCE ───────────────────────────────────────────────────── */
+#experience { background: var(--bg); }
+
+.timeline { position: relative; padding-left: 2px; }
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 8px; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--cyan), transparent);
+}
+
+.timeline-item {
+  position: relative;
+  padding: 0 0 3rem 2.5rem;
+  opacity: 0;
+  transform: translateX(-16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.timeline-item.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -5px; top: 6px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px rgba(0,201,184,0.5);
+  border: 2px solid var(--bg);
+}
+
+.timeline-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--cyan);
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+
+.timeline-role {
+  font-family: var(--serif);
+  font-size: 21px;
+  color: var(--white);
+  margin-bottom: 3px;
+}
+
+.timeline-org {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.timeline-bullets {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.timeline-bullets li {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.65;
+  padding-left: 16px;
+  position: relative;
+}
+
+.timeline-bullets li::before {
+  content: '▸';
+  position: absolute; left: 0;
+  color: var(--cyan-dim);
+  font-size: 11px;
+  top: 2px;
+}
+
+/* ── EDUCATION ────────────────────────────────────────────────────── */
+#education {
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  border-bottom: 1px solid var(--border2);
+}
+
+.edu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.edu-card {
+  background: var(--bg);
+  padding: 2rem;
+}
+
+.edu-icon {
+  font-size: 24px;
+  margin-bottom: 1rem;
+}
+
+.edu-degree {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--white);
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+
+.edu-field {
+  font-size: 13px;
+  color: var(--cyan);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+
+.edu-meta {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.edu-courses {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+
+/* ── CERTIFICATIONS ───────────────────────────────────────────────── */
+#certifications { background: var(--bg); }
+
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1px;
+  background: var(--border2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cert-card {
+  background: var(--bg2);
+  padding: 1.75rem;
+  transition: background 0.2s;
+  position: relative;
+}
+.cert-card:hover { background: var(--bg3); }
+
+.cert-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan), transparent);
+}
+
+.cert-provider {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+.cert-name {
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--white);
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+}
+
+.cert-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* ── CONTACT ──────────────────────────────────────────────────────── */
+#contact {
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  text-align: center;
+  padding: 100px 5vw;
+}
+
+.contact-headline {
+  font-family: var(--serif);
+  font-size: clamp(36px, 5vw, 64px);
+  color: var(--white);
+  margin-bottom: 1.25rem;
+  line-height: 1.1;
+}
+
+.contact-sub {
+  color: var(--muted);
+  max-width: 500px;
+  margin: 0 auto 2.5rem;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.contact-links {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 12px;
+  margin-bottom: 3rem;
+}
+
+.contact-link {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 10px 20px;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  transition: all 0.2s;
+  letter-spacing: 0.06em;
+}
+.contact-link:hover { color: var(--cyan); border-color: var(--border); background: var(--cyan-glow); }
+
+.contact-availability {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--cyan);
+  letter-spacing: 0.08em;
+}
+
+.pulse-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ── FOOTER ───────────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border2);
+  padding: 24px 5vw;
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--bg);
+  position: relative; z-index: 1;
+}
+
+/* ── ANIMATIONS ───────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(80px); }
+  to   { transform: rotate(360deg) translateX(80px); }
+}
+
+@keyframes orbIn {
+  from { opacity: 0; transform: translateY(-50%) scale(0.85); }
+  to   { opacity: 1; transform: translateY(-50%) scale(1); }
+}
+
+@keyframes orbPulse {
+  0%, 100% { box-shadow: inset 0 0 60px rgba(0,201,184,0.06), 0 0 80px rgba(0,201,184,0.05); }
+  50%       { box-shadow: inset 0 0 80px rgba(0,201,184,0.10), 0 0 120px rgba(0,201,184,0.08); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ── Divider ─────────────────────────────────────────────────────── */
+.divider {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .about-grid,
+  .edu-grid { grid-template-columns: 1fr; }
+  .hero-orb { display: none; }
+  nav .nav-badge { display: none; }
+  .project-card { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">RS // Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#certifications">Certs</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <span class="nav-badge">Available · Remote</span>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-eyebrow"><span></span>AI Data Evaluator &amp; Medical Informatics Specialist</div>
+  <h1 class="hero-name">Rahma<br><em>Sheta</em></h1>
+  <p class="hero-sub">
+    Bridging HIPAA-regulated healthcare operations with frontier AI model evaluation —
+    specializing in 3D spatial analysis, DICOM medical imaging, and bilingual RLHF data pipelines.
+  </p>
+  <div class="hero-tags">
+    <span class="hero-tag">RLHF &amp; SFT Evaluation</span>
+    <span class="hero-tag">3D Slicer · DICOM</span>
+    <span class="hero-tag">Godot · Blender · Python</span>
+    <span class="hero-tag">Arabic / English NLP</span>
+    <span class="hero-tag">HIPAA Compliance</span>
+    <span class="hero-tag">Medical Informatics</span>
+  </div>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">View Projects</a>
+    <a href="#contact" class="btn btn-outline">Get in Touch</a>
+  </div>
+
+  <div class="hero-orb">
+    <div class="orb-ring"></div>
+    <div class="orb-ring2"></div>
+    <div class="orb-dot"></div>
+    <div class="orb-label tl">x: 48.2</div>
+    <div class="orb-label br">z: 0.33</div>
+    <div class="orb-label tr">y: 12.7</div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header">
+    <div class="section-label">About</div>
+    <h2 class="section-title">The Intersection of<br>Clinical Precision &amp; AI</h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm an AI data evaluator and medical informatics specialist based in <strong>Telford, Pennsylvania</strong>, with a formal academic foundation in Health Professions and deep self-directed expertise in 3D spatial software and clinical data pipelines.</p>
+      <p>My work sits at a rare intersection: I understand the <strong>regulatory constraints of clinical data</strong> — HIPAA compliance, PHI handling, secure data de-identification — and I apply that same rigor to AI training workflows, rubric-driven LLM evaluation, and structured dataset preparation.</p>
+      <p>I use <strong>3D Slicer</strong> to segment and process DICOM medical files, <strong>Godot and Blender</strong> to build and test synthetic 3D training environments, and <strong>Python scripting</strong> to automate anatomical metric extraction — all in service of producing high-quality, domain-accurate training data for frontier AI models.</p>
+      <p>As a <strong>native Arabic and fluent English speaker</strong>, I evaluate bilingual NLP outputs for cultural coherence, translation fidelity, and cross-lingual safety alignment — a rare combination that opens access to premium-tier evaluation projects.</p>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="stat-val">3.76</div>
+          <div class="stat-label">GPA — Health Professions</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val">2</div>
+          <div class="stat-label">Languages — Arabic &amp; English</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val">3+</div>
+          <div class="stat-label">Active AI Training Projects</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val">4</div>
+          <div class="stat-label">Completed Tech Certifications</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="lang-card">
+        <div class="lang-name">Arabic</div>
+        <div class="lang-level">Native · C2</div>
+        <div class="lang-bar-bg"><div class="lang-bar-fill" style="width:100%"></div></div>
+      </div>
+      <div class="lang-card">
+        <div class="lang-name">English</div>
+        <div class="lang-level">Fluent · C1+</div>
+        <div class="lang-bar-bg"><div class="lang-bar-fill" style="width:90%"></div></div>
+      </div>
+
+      <div style="border:1px solid var(--border2); border-radius:4px; padding:1.5rem; background:var(--bg3); margin-top:1rem;">
+        <div style="font-family:var(--mono); font-size:11px; color:var(--cyan); letter-spacing:.08em; text-transform:uppercase; margin-bottom:1rem;">Bilingual NLP Capability</div>
+        <p style="font-size:13.5px; color:var(--muted); line-height:1.7; margin-bottom:.75rem;">Arabic/English bilingual NLP evaluation covers MSA (Modern Standard Arabic), Levantine dialect, cultural nuance mapping, and cross-lingual safety alignment — directly applicable to bilingual LLM evaluation projects on Outlier, Mercor, and Alignerr.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span class="skill-tag">MSA</span>
+          <span class="skill-tag">Levantine Arabic</span>
+          <span class="skill-tag">Cross-cultural NLP</span>
+          <span class="skill-tag">Translation QA</span>
+          <span class="skill-tag">Bias detection</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header">
+    <div class="section-label">Expertise</div>
+    <h2 class="section-title">Core Technical<br>Competencies</h2>
+  </div>
+
+  <div class="skills-grid">
+    <div class="skill-card">
+      <div class="skill-card-icon">🧠</div>
+      <div class="skill-card-title">AI &amp; LLM Evaluation</div>
+      <div class="skill-tags">
+        <span class="skill-tag">RLHF</span>
+        <span class="skill-tag">SFT data generation</span>
+        <span class="skill-tag">Rubric-based scoring</span>
+        <span class="skill-tag">Hallucination detection</span>
+        <span class="skill-tag">Edge-case remediation</span>
+        <span class="skill-tag">Multi-turn QA</span>
+        <span class="skill-tag">Preference data</span>
+        <span class="skill-tag">Safety alignment</span>
+        <span class="skill-tag">HITL annotation</span>
+        <span class="skill-tag">Prompt engineering</span>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <div class="skill-card-icon">🫁</div>
+      <div class="skill-card-title">Medical Imaging &amp; Spatial Analysis</div>
+      <div class="skill-tags">
+        <span class="skill-tag">3D Slicer</span>
+        <span class="skill-tag">DICOM processing</span>
+        <span class="skill-tag">Anatomical segmentation</span>
+        <span class="skill-tag">Medical visualization</span>
+        <span class="skill-tag">Clinical data structuring</span>
+        <span class="skill-tag">Pharmacological terminology</span>
+        <span class="skill-tag">Python in 3D Slicer</span>
+        <span class="skill-tag">HIPAA de-identification</span>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <div class="skill-card-icon">🎮</div>
+      <div class="skill-card-title">3D Media &amp; Game Development</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Godot (GDScript)</span>
+        <span class="skill-tag">Blender Python API</span>
+        <span class="skill-tag">3D environment rendering</span>
+        <span class="skill-tag">Collision mapping</span>
+        <span class="skill-tag">Physics engine testing</span>
+        <span class="skill-tag">Synthetic asset generation</span>
+        <span class="skill-tag">Gameplay data capture</span>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <div class="skill-card-icon">⌨️</div>
+      <div class="skill-card-title">Programming &amp; Version Control</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">GDScript</span>
+        <span class="skill-tag">Linux Bash scripting</span>
+        <span class="skill-tag">Git / GitHub</span>
+        <span class="skill-tag">Pipeline automation</span>
+        <span class="skill-tag">Dataset preparation</span>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <div class="skill-card-icon">🔒</div>
+      <div class="skill-card-title">Compliance &amp; Data Governance</div>
+      <div class="skill-tags">
+        <span class="skill-tag">HIPAA compliance</span>
+        <span class="skill-tag">PHI handling</span>
+        <span class="skill-tag">PII sanitization</span>
+        <span class="skill-tag">Guideline adherence</span>
+        <span class="skill-tag">QA workflow management</span>
+        <span class="skill-tag">Audit documentation</span>
+        <span class="skill-tag">Data de-identification</span>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <div class="skill-card-icon">🌐</div>
+      <div class="skill-card-title">Bilingual NLP Evaluation</div>
+      <div class="skill-tags">
+        <span class="skill-tag">Native Arabic (MSA)</span>
+        <span class="skill-tag">Levantine dialect</span>
+        <span class="skill-tag">Fluent English (C1+)</span>
+        <span class="skill-tag">Cross-cultural NLP</span>
+        <span class="skill-tag">Translation QA</span>
+        <span class="skill-tag">Bias-aware evaluation</span>
+        <span class="skill-tag">Safety alignment</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header">
+    <div class="section-label">Portfolio</div>
+    <h2 class="section-title">AI Training &amp;<br>Technical Projects</h2>
+  </div>
+
+  <div class="projects-list">
+
+    <div class="project-card">
+      <div>
+        <div class="project-num">PROJECT 01</div>
+        <div class="project-title">3D Spatial Data Collection &amp; AI Evaluation</div>
+        <div class="project-sub">Freelance / Independent Contract · Remote · 2025 – Present</div>
+        <p class="project-desc">
+          End-to-end AI training data pipeline for visual-understanding and game-agent models, combining spatial logic evaluation with structured quality assurance workflows inside 3D environments.
+        </p>
+        <ul class="project-bullets">
+          <li>Evaluate AI-generated spatial reasoning and 3D logic outputs against structured quality rubrics, assessing technical accuracy, coordinate system coherence, and object interaction fidelity.</li>
+          <li>Execute multi-step 3D data collection workflows using Godot, capturing high-fidelity gameplay and spatial interaction data to build training datasets for frontier AI computer vision models.</li>
+          <li>Design and deliver complex, multi-turn prompts to evaluate AI model competency in generating and navigating 3D coordinate systems, applying systematic edge-case remediation across test runs.</li>
+          <li>Apply PII/PHI sanitization protocols and strict data governance standards to all collected training datasets prior to submission, maintaining zero compliance violations.</li>
+        </ul>
+        <div class="project-stack">
+          <span class="stack-tag">Godot</span>
+          <span class="stack-tag">GDScript</span>
+          <span class="stack-tag">Python</span>
+          <span class="stack-tag">RLHF</span>
+          <span class="stack-tag">Spatial Logic QA</span>
+          <span class="stack-tag">Rubric-based scoring</span>
+        </div>
+      </div>
+      <span class="project-badge">Active · 2025</span>
+    </div>
+
+    <div class="project-card">
+      <div>
+        <div class="project-num">PROJECT 02</div>
+        <div class="project-title">Medical Imaging Data Processing — 3D Slicer &amp; DICOM Analysis</div>
+        <div class="project-sub">Independent Project · Health Professions Academic Track · 2024 – Present</div>
+        <p class="project-desc">
+          Domain-specialist medical imaging pipeline combining clinical knowledge with 3D Slicer Python scripting to produce structured, anatomically validated datasets suitable for visual AI model training.
+        </p>
+        <ul class="project-bullets">
+          <li>Segment and process open-source DICOM medical files using 3D Slicer, applying Health Professions academic background to validate structural accuracy of generated anatomical outputs.</li>
+          <li>Utilize Python scripting within the 3D Slicer environment to automate extraction of anatomical metrics, structuring datasets suitable for visual AI model training and spatial benchmarking.</li>
+          <li>Validate generated 3D anatomical models against clinical logic, bridging pharmacological and medical terminology with digital spatial representation to ensure domain-accurate training data.</li>
+          <li>Apply HIPAA-compliant de-identification protocols to all processed medical data prior to use in training pipelines.</li>
+        </ul>
+        <div class="project-stack">
+          <span class="stack-tag">3D Slicer</span>
+          <span class="stack-tag">DICOM</span>
+          <span class="stack-tag">Python</span>
+          <span class="stack-tag">Anatomical segmentation</span>
+          <span class="stack-tag">HIPAA compliance</span>
+          <span class="stack-tag">SFT data</span>
+        </div>
+      </div>
+      <span class="project-badge">Ongoing</span>
+    </div>
+
+    <div class="project-card">
+      <div>
+        <div class="project-num">PROJECT 03</div>
+        <div class="project-title">Game Engine Scripting &amp; Synthetic Asset Generation</div>
+        <div class="project-sub">Independent Project · Godot &amp; Blender · 2024 – Present</div>
+        <p class="project-desc">
+          Synthetic 3D training environment generation pipeline using Godot and Blender to stress-test computer vision models and produce edge-case-rich datasets for AI spatial reasoning benchmarks.
+        </p>
+        <ul class="project-bullets">
+          <li>Script interactive physical logic and object behaviors in Godot using GDScript, testing collision mapping, physics engine responses, and spatial interaction edge cases under varied conditions.</li>
+          <li>Automate 3D rendering pipelines and manipulate geometry in Blender using its Python API, generating synthetic training environments designed to stress-test edge cases in computer vision models.</li>
+          <li>Document and structure all generated assets with consistent labeling schemas and metadata, ensuring compatibility with downstream model training pipelines.</li>
+        </ul>
+        <div class="project-stack">
+          <span class="stack-tag">Blender</span>
+          <span class="stack-tag">Python API</span>
+          <span class="stack-tag">Godot</span>
+          <span class="stack-tag">GDScript</span>
+          <span class="stack-tag">Computer vision</span>
+          <span class="stack-tag">Edge-case QA</span>
+        </div>
+      </div>
+      <span class="project-badge">Ongoing</span>
+    </div>
+
+    <div class="project-card">
+      <div>
+        <div class="project-num">PROJECT 04</div>
+        <div class="project-title">Bilingual Arabic–English LLM Evaluation</div>
+        <div class="project-sub">Independent Contract · Remote · 2024 – Present</div>
+        <p class="project-desc">
+          Cross-lingual safety and quality evaluation for LLM outputs in Arabic (MSA &amp; Levantine) and English, covering cultural coherence, translation fidelity, and bias-aware preference scoring.
+        </p>
+        <ul class="project-bullets">
+          <li>Evaluate LLM-generated responses in Arabic (MSA &amp; Levantine dialect) and English using structured rubrics assessing factual accuracy, cultural alignment, and logical consistency.</li>
+          <li>Perform ranking and preference comparison tasks on bilingual LLM outputs, selecting higher-quality responses with documented reasoning aligned to project rubrics.</li>
+          <li>Identify cultural insensitivity, mistranslation artifacts, and bias patterns in Arabic-language model generations; provide structured feedback for model improvement.</li>
+          <li>Author gold-standard human-written reference responses in both languages to establish SFT baselines for bilingual model fine-tuning.</li>
+        </ul>
+        <div class="project-stack">
+          <span class="stack-tag">Arabic NLP</span>
+          <span class="stack-tag">English NLP</span>
+          <span class="stack-tag">RLHF</span>
+          <span class="stack-tag">SFT</span>
+          <span class="stack-tag">Bias detection</span>
+          <span class="stack-tag">Cross-cultural evaluation</span>
+        </div>
+      </div>
+      <span class="project-badge">Active</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header">
+    <div class="section-label">Experience</div>
+    <h2 class="section-title">Professional<br>History</h2>
+  </div>
+
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">2025 – 2026</div>
+      <div class="timeline-role">Pharmacy Assistant — Medical Data Compliance &amp; Workflow QA</div>
+      <div class="timeline-org">CVS Pharmacy · Exton, PA</div>
+      <ul class="timeline-bullets">
+        <li>Managed high-volume prescription processing and structured medical data entry with a strict 100% accuracy standard and full HIPAA/PHI compliance across all patient data interactions.</li>
+        <li>Navigated complex insurance databases and resolved algorithmic system routing errors, acting as final verification checkpoint between pharmacological requirements and digital system outputs.</li>
+        <li>Applied rubric-driven decision frameworks to identify and escalate edge-case prescription conflicts, ensuring zero compliance violations across all processed records.</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">2023 – 2025</div>
+      <div class="timeline-role">Financial Data Assistant — Audit &amp; Secure Records Management</div>
+      <div class="timeline-org">Delaware County Community College · Media, PA</div>
+      <ul class="timeline-bullets">
+        <li>Audited and processed secure institutional financial documents with precise data entry standards, maintaining accurate records across multi-department administrative workflows.</li>
+        <li>Resolved multi-step routing issues within the campus administrative database to prevent processing delays and protect sensitive demographic and financial data.</li>
+      </ul>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-date">2023 – 2025</div>
+      <div class="timeline-role">Student Mentor — Technical Resource Guidance</div>
+      <div class="timeline-org">Delaware County Community College · Media, PA</div>
+      <ul class="timeline-bullets">
+        <li>Guided students through complex institutional processes, technical resource mapping, and scheduling systems — demonstrating structured communication and guideline-based problem solving.</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-header">
+    <div class="section-label">Education</div>
+    <h2 class="section-title">Academic<br>Background</h2>
+  </div>
+
+  <div class="edu-grid">
+    <div class="edu-card">
+      <div class="edu-icon">🎓</div>
+      <div class="edu-degree">Associate's Degree</div>
+      <div class="edu-field">Health Professions &amp; Related Clinical Sciences</div>
+      <div class="edu-meta">Delaware County Community College · Media, PA · 2023 – 2026 (Expected)</div>
+      <div style="font-family:var(--mono); font-size:13px; color:var(--cyan); margin-bottom:1rem;">GPA: 3.76</div>
+      <p style="font-size:13.5px; color:var(--muted); line-height:1.6; margin-bottom:1rem;">Formal academic foundation in health professions, providing domain expertise in medical terminology, anatomy, clinical compliance, and healthcare data management — directly applied to medical imaging AI projects and HIPAA-compliant data pipelines.</p>
+      <div class="edu-courses">
+        <span class="skill-tag">Medical Terminology</span>
+        <span class="skill-tag">Anatomy &amp; Physiology</span>
+        <span class="skill-tag">Health Data Management</span>
+        <span class="skill-tag">Clinical Compliance</span>
+        <span class="skill-tag">Pharmacology</span>
+      </div>
+    </div>
+
+    <div class="edu-card">
+      <div class="edu-icon">🏫</div>
+      <div class="edu-degree">High School Diploma</div>
+      <div class="edu-field">General Studies</div>
+      <div class="edu-meta">Ridley High School · PA · 2020 – 2023</div>
+      <div style="height:1rem"></div>
+      <p style="font-size:13.5px; color:var(--muted); line-height:1.6; margin-bottom:1rem;">Foundation in structured academic study, building the critical thinking, guideline adherence, and analytical judgment skills applied across all current technical and AI evaluation work.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <div class="section-header">
+    <div class="section-label">Certifications</div>
+    <h2 class="section-title">Independent Coursework<br>&amp; Credentials</h2>
+  </div>
+
+  <div class="cert-grid">
+    <div class="cert-card">
+      <div class="cert-provider">Coursera</div>
+      <div class="cert-name">Training AI with Humans</div>
+      <div class="cert-desc">Covers RLHF methodology, human feedback collection systems, preference data pipelines, and how human judgment is structured into model training workflows. Directly applicable to LLM evaluation and annotation projects.</div>
+    </div>
+
+    <div class="cert-card">
+      <div class="cert-provider">DeepLearning.AI</div>
+      <div class="cert-name">AI for Medical Diagnosis</div>
+      <div class="cert-desc">Covers convolutional neural networks applied to medical image analysis, clinical AI workflows, and dataset preparation for diagnostic model training — reinforcing the technical foundation used in 3D Slicer DICOM projects.</div>
+    </div>
+
+    <div class="cert-card">
+      <div class="cert-provider">Kitware Curriculum</div>
+      <div class="cert-name">Introduction to 3D Slicer &amp; DICOM Processing</div>
+      <div class="cert-desc">Hands-on training in DICOM file structure, anatomical segmentation workflows, Python scripting within 3D Slicer, and structured medical dataset preparation for AI training pipelines.</div>
+    </div>
+
+    <div class="cert-card">
+      <div class="cert-provider">Udemy</div>
+      <div class="cert-name">Object-Oriented Programming in Godot (GDScript)</div>
+      <div class="cert-desc">OOP principles, GDScript syntax and patterns, physics scripting, collision system logic, and scene management — directly supporting the synthetic 3D training environment generation pipeline.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <h2 class="contact-headline">Let's Work<br><em style="font-family:var(--serif); font-style:italic; color:var(--cyan)">Together</em></h2>
+  <p class="contact-sub">
+    Open to AI training projects, RLHF evaluation contracts, medical imaging annotation, and bilingual Arabic/English NLP tasks — remote, flexible, and immediately available.
+  </p>
+  <div class="contact-links">
+    <a href="mailto:shemouafayed975@gmail.com" class="contact-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+      shemouafayed975@gmail.com
+    </a>
+    <a href="tel:6103556030" class="contact-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.15 11.94 19.79 19.79 0 0 1 1.07 3.32 2 2 0 0 1 3.05 1.12h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/></svg>
+      (610) 355-6030
+    </a>
+    <a href="#" class="contact-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      Telford, Pennsylvania, USA
+    </a>
+  </div>
+  <div class="contact-availability">
+    <div class="pulse-dot"></div>
+    Available for remote AI training &amp; evaluation projects
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 Rahma Sheta — AI Data Evaluator &amp; Medical Informatics Specialist</span>
+  <span style="font-family:var(--mono); color:var(--cyan-dim);">Telford, PA · Remote</span>
+</footer>
+
+<script>
+// Intersection Observer for timeline animation
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 120);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.timeline-item').forEach(el => observer.observe(el));
+
+// Active nav link highlight
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#' + current
+      ? 'var(--cyan)' : '';
+  });
+});
+
+// Animate language bars on scroll
+const langBars = document.querySelectorAll('.lang-bar-fill');
+const langObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.width = entry.target.style.width || '0%';
+    }
+  });
+}, { threshold: 0.5 });
+langBars.forEach(b => langObserver.observe(b));
+</script>
+</body>
+</html>
